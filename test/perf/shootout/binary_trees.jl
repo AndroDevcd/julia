@@ -8,12 +8,12 @@
 # Ported from an OCaml version
 #
 
-abstract BTree
+abstract type BTree end
 
-type Empty <: BTree
+mutable type Empty <: BTree
 end
 
-type Node <: BTree
+mutable type Node <: BTree
     info
     left::BTree
     right::BTree

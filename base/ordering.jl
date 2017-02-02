@@ -11,10 +11,10 @@ export # not exported by Base
     DirectOrdering,
     lt, ord, ordtype
 
-abstract Ordering
+abstract type Ordering end
 
-immutable ForwardOrdering <: Ordering end
-immutable ReverseOrdering{Fwd<:Ordering} <: Ordering
+struct type ForwardOrdering <: Ordering end
+struct type ReverseOrdering{Fwd<:Ordering} <: Ordering
     fwd::Fwd
 end
 
@@ -26,18 +26,18 @@ typealias DirectOrdering Union{ForwardOrdering,ReverseOrdering{ForwardOrdering}}
 const Forward = ForwardOrdering()
 const Reverse = ReverseOrdering(Forward)
 
-immutable LexicographicOrdering <: Ordering end
+struct type LexicographicOrdering <: Ordering end
 const Lexicographic = LexicographicOrdering()
 
-immutable By{T} <: Ordering
+struct type By{T} <: Ordering
     by::T
 end
 
-immutable Lt{T} <: Ordering
+struct type Lt{T} <: Ordering
     lt::T
 end
 
-immutable Perm{O<:Ordering,V<:AbstractVector} <: Ordering
+struct type Perm{O<:Ordering,V<:AbstractVector} <: Ordering
     order::O
     data::V
 end

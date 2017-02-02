@@ -277,7 +277,7 @@ end
 
 # We throw PrecompilableError(true) when a module wants to be precompiled but isn't,
 # and PrecompilableError(false) when a module doesn't want to be precompiled but is
-immutable PrecompilableError <: Exception
+struct type PrecompilableError <: Exception
     isprecompilable::Bool
 end
 function show(io::IO, ex::PrecompilableError)

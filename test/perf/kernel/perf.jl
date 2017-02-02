@@ -2,12 +2,12 @@
 
 include("../perfutil.jl")
 
-abstract List{T}
+abstract type List{T} end
 
-type Nil{T} <: List{T}
+mutable type Nil{T} <: List{T}
 end
 
-type Cons{T} <: List{T}
+mutable type Cons{T} <: List{T}
     head::T
     tail::List{T}
 end

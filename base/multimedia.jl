@@ -119,7 +119,7 @@ end
 # cannot be displayed.  The return value of display(...) is up to the
 # Display type.
 
-abstract Display
+abstract type Display end
 
 # it is convenient to accept strings instead of ::MIME
 display(d::Display, mime::AbstractString, x) = display(d, MIME(mime), x)
@@ -145,7 +145,7 @@ Returns a `TextDisplay <: Display`, which displays any object as the text/plain 
 (by default), writing the text representation to the given I/O stream. (This is how
 objects are printed in the Julia REPL.)
 """
-immutable TextDisplay <: Display
+struct type TextDisplay <: Display
     io::IO
 end
 display(d::TextDisplay, M::MIME"text/plain", x) = show(d.io, M, x)

@@ -76,7 +76,7 @@
 #end
 
 #abstract Ref{T}
-#bitstype {32|64} Ptr{T} <: Ref{T}
+#primitive type Ptr{T} <: Ref{T} {32|64} end
 
 # types for the front end
 
@@ -150,30 +150,30 @@ export
 
 typealias AnyVector Array{Any,1}
 
-abstract Number
-abstract Real     <: Number
-abstract AbstractFloat <: Real
-abstract Integer  <: Real
-abstract Signed   <: Integer
-abstract Unsigned <: Integer
+abstract type Number end
+abstract type Real     <: Number end
+abstract type AbstractFloat <: Real end
+abstract type Integer  <: Real end
+abstract type Signed   <: Integer end
+abstract type Unsigned <: Integer end
 
-bitstype 16 Float16 <: AbstractFloat
-bitstype 32 Float32 <: AbstractFloat
-bitstype 64 Float64 <: AbstractFloat
+primitive type Float16 <: AbstractFloat 16 end
+primitive type Float32 <: AbstractFloat 32 end
+primitive type Float64 <: AbstractFloat 64 end
 
-bitstype 8  Bool <: Integer
-bitstype 32 Char
+primitive type Bool <: Integer 8 end
+primitive type Char 32 end
 
-bitstype 8   Int8    <: Signed
-bitstype 8   UInt8   <: Unsigned
-bitstype 16  Int16   <: Signed
-bitstype 16  UInt16  <: Unsigned
-bitstype 32  Int32   <: Signed
-bitstype 32  UInt32  <: Unsigned
-bitstype 64  Int64   <: Signed
-bitstype 64  UInt64  <: Unsigned
-bitstype 128 Int128  <: Signed
-bitstype 128 UInt128 <: Unsigned
+primitive type Int8    <: Signed   8 end
+primitive type UInt8   <: Unsigned 8 end
+primitive type Int16   <: Signed   16 end
+primitive type UInt16  <: Unsigned 16 end
+primitive type Int32   <: Signed   32 end
+primitive type UInt32  <: Unsigned 32 end
+primitive type Int64   <: Signed   64 end
+primitive type UInt64  <: Unsigned 64 end
+primitive type Int128  <: Signed   128 end
+primitive type UInt128 <: Unsigned 128 end
 
 if Int === Int64
     typealias UInt UInt64
@@ -184,8 +184,8 @@ end
 function Typeof end
 (f::typeof(Typeof))(x::ANY) = isa(x,Type) ? Type{x} : typeof(x)
 
-abstract Exception
-type ErrorException <: Exception
+abstract type Exception end
+mutable type ErrorException <: Exception
     msg::AbstractString
     ErrorException(msg::AbstractString) = new(msg)
 end
@@ -196,34 +196,34 @@ macro _noinline_meta()
     Expr(:meta, :noinline)
 end
 
-immutable BoundsError        <: Exception
+struct type BoundsError        <: Exception
     a::Any
     i::Any
     BoundsError() = new()
     BoundsError(a::ANY) = (@_noinline_meta; new(a))
     BoundsError(a::ANY, i) = (@_noinline_meta; new(a,i))
 end
-immutable DivideError        <: Exception end
-immutable DomainError        <: Exception end
-immutable OverflowError      <: Exception end
-immutable InexactError       <: Exception end
-immutable OutOfMemoryError   <: Exception end
-immutable ReadOnlyMemoryError<: Exception end
-immutable SegmentationFault  <: Exception end
-immutable StackOverflowError <: Exception end
-immutable UndefRefError      <: Exception end
-immutable UndefVarError      <: Exception
+struct type DivideError        <: Exception end
+struct type DomainError        <: Exception end
+struct type OverflowError      <: Exception end
+struct type InexactError       <: Exception end
+struct type OutOfMemoryError   <: Exception end
+struct type ReadOnlyMemoryError<: Exception end
+struct type SegmentationFault  <: Exception end
+struct type StackOverflowError <: Exception end
+struct type UndefRefError      <: Exception end
+struct type UndefVarError      <: Exception
     var::Symbol
 end
-immutable InterruptException <: Exception end
-type TypeError <: Exception
+struct type InterruptException <: Exception end
+mutable type TypeError <: Exception
     func::Symbol
     context::AbstractString
     expected::Type
     got
 end
 
-abstract DirectIndexString <: AbstractString
+abstract type DirectIndexString <: AbstractString end
 
 String(s::String) = s  # no constructor yet
 
@@ -239,7 +239,7 @@ kwfunc(f::ANY) = ccall(:jl_get_keyword_sorter, Any, (Any,), f)
 
 kwftype(t::ANY) = typeof(ccall(:jl_get_kwsorter, Any, (Any,), t.name))
 
-type Box
+mutable type Box
     contents::Any
     Box(x::ANY) = new(x)
     Box() = new()
@@ -247,7 +247,7 @@ end
 
 # constructors for built-in types
 
-type WeakRef
+mutable type WeakRef
     value
     WeakRef() = WeakRef(nothing)
     WeakRef(v::ANY) = ccall(:jl_gc_new_weakref_th, Ref{WeakRef},
@@ -267,7 +267,7 @@ Void() = nothing
 
 (::Type{Tuple{}})() = ()
 
-immutable VecElement{T}
+struct type VecElement{T}
     value::T
     VecElement(value::T) = new(value) # disable converting constructor in Core
 end
@@ -350,9 +350,9 @@ atdoc!(λ) = global atdoc = λ
 
 
 # simple stand-alone print definitions for debugging
-abstract IO
-type CoreSTDOUT <: IO end
-type CoreSTDERR <: IO end
+abstract type IO end
+mutable type CoreSTDOUT <: IO end
+mutable type CoreSTDERR <: IO end
 const STDOUT = CoreSTDOUT()
 const STDERR = CoreSTDERR()
 io_pointer(::CoreSTDOUT) = Intrinsics.pointerref(Intrinsics.cglobal(:jl_uv_stdout, Ptr{Void}), 1, 1)

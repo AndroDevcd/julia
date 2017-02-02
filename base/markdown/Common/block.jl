@@ -4,7 +4,7 @@
 # Paragraphs
 # ––––––––––
 
-type Paragraph
+mutable type Paragraph
     content
 end
 
@@ -40,7 +40,7 @@ end
 # Headers
 # –––––––
 
-type Header{level}
+mutable type Header{level}
     text
 end
 
@@ -96,7 +96,7 @@ end
 # Code
 # ––––
 
-type Code
+mutable type Code
     language::String
     code::String
 end
@@ -125,7 +125,7 @@ end
 # Footnote
 # --------
 
-type Footnote
+mutable type Footnote
     id::String
     text
 end
@@ -160,7 +160,7 @@ end
 # Quotes
 # ––––––
 
-type BlockQuote
+mutable type BlockQuote
     content
 end
 
@@ -189,7 +189,7 @@ end
 # Admonitions
 # -----------
 
-type Admonition
+mutable type Admonition
     category::String
     title::String
     content::Vector
@@ -247,7 +247,7 @@ end
 # Lists
 # –––––
 
-type List
+mutable type List
     items::Vector{Any}
     ordered::Int # `-1` is unordered, `>= 0` is ordered.
 
@@ -332,7 +332,7 @@ pushitem!(list, buffer) = push!(list.items, parse(String(take!(buffer))).content
 # HorizontalRule
 # ––––––––––––––
 
-type HorizontalRule
+mutable type HorizontalRule
 end
 
 function horizontalrule(stream::IO, block::MD)

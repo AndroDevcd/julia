@@ -206,13 +206,13 @@ end
 
 ## sorting algorithms ##
 
-abstract Algorithm
+abstract type Algorithm end
 
-immutable InsertionSortAlg <: Algorithm end
-immutable QuickSortAlg     <: Algorithm end
-immutable MergeSortAlg     <: Algorithm end
+struct type InsertionSortAlg <: Algorithm end
+struct type QuickSortAlg     <: Algorithm end
+struct type MergeSortAlg     <: Algorithm end
 
-immutable PartialQuickSort{T <: Union{Int,OrdinalRange}} <: Algorithm
+struct type PartialQuickSort{T <: Union{Int,OrdinalRange}} <: Algorithm
     k::T
 end
 
@@ -690,8 +690,8 @@ import ...Order: lt, DirectOrdering
 
 typealias Floats Union{Float32,Float64}
 
-immutable Left <: Ordering end
-immutable Right <: Ordering end
+struct type Left <: Ordering end
+struct type Right <: Ordering end
 
 left(::DirectOrdering) = Left()
 right(::DirectOrdering) = Right()

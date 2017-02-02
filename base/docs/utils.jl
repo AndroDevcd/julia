@@ -19,7 +19,7 @@ You can also use a stream for large amounts of data:
       println(io, "<div>foo</div>")
     end
 """
-type HTML{T}
+mutable type HTML{T}
     content::T
 end
 
@@ -64,7 +64,7 @@ You can also use a stream for large amounts of data:
       println(io, "foo")
     end
 """
-type Text{T}
+mutable type Text{T}
     content::T
 end
 

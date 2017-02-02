@@ -1,6 +1,6 @@
 # This file is a part of Julia. License is MIT: http://julialang.org/license
 
-type Node
+mutable type Node
     name::String
     n::Set{Node}
 

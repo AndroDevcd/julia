@@ -1,11 +1,11 @@
 # This file is a part of Julia. Except for the *_kernel functions (see below),
 # license is MIT: http://julialang.org/license
 
-immutable DoubleFloat64
+struct type DoubleFloat64
     hi::Float64
     lo::Float64
 end
-immutable DoubleFloat32
+struct type DoubleFloat32
     hi::Float64
 end
 

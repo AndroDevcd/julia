@@ -5,7 +5,7 @@ module PermutedDimsArrays
 export permutedims, PermutedDimsArray
 
 # Some day we will want storage-order-aware iteration, so put perm in the parameters
-immutable PermutedDimsArray{T,N,perm,iperm,AA<:AbstractArray} <: AbstractArray{T,N}
+struct type PermutedDimsArray{T,N,perm,iperm,AA<:AbstractArray} <: AbstractArray{T,N}
     parent::AA
 
     function PermutedDimsArray(data::AA)

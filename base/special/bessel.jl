@@ -1,6 +1,6 @@
 # This file is a part of Julia. License is MIT: http://julialang.org/license
 
-type AmosException <: Exception
+mutable type AmosException <: Exception
     info::Int32
 end
 

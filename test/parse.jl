@@ -646,12 +646,12 @@ end
 for (str, tag) in Dict("" => :none, "\"" => :string, "#=" => :comment, "'" => :char,
                        "`" => :cmd, "begin;" => :block, "quote;" => :block,
                        "let;" => :block, "for i=1;" => :block, "function f();" => :block,
-                       "f() do x;" => :block, "module X;" => :block, "type X;" => :block,
-                       "immutable X;" => :block, "(" => :other, "[" => :other,
+                       "f() do x;" => :block, "module X;" => :block, "mutable type X;" => :block,
+                       "struct type X;" => :block, "(" => :other, "[" => :other,
                        "begin" => :other, "quote" => :other,
                        "let" => :other, "for" => :other, "function" => :other,
-                       "f() do" => :other, "module" => :other, "type" => :other,
-                       "immutable" => :other)
+                       "f() do" => :other, "module" => :other, "mutable type" => :other,
+                       "struct type" => :other)
     @test Base.incomplete_tag(parse(str, raise=false)) == tag
 end
 
@@ -851,7 +851,7 @@ end
 
 # issue 18756
 module Mod18756
-type Type
+mutable type Type
 end
 end
 @test method_exists(Mod18756.Type, ())

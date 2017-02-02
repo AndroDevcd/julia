@@ -4,7 +4,7 @@ using Base.Serializer: known_object_data, object_number, serialize_cycle, deseri
                       __deserialized_types__, serialize_typename, deserialize_typename,
                       TYPENAME_TAG, object_numbers, reset_state, serialize_type
 
-type ClusterSerializer{I<:IO} <: AbstractSerializer
+mutable type ClusterSerializer{I<:IO} <: AbstractSerializer
     io::I
     counter::Int
     table::ObjectIdDict

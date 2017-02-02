@@ -9,7 +9,7 @@ The syntax `f(x) [if cond(x)::Bool] for x in iter` is syntax for constructing an
 type. The `[if cond(x)::Bool]` expression is optional and acts as a "guard", effectively
 filtering out values where the condition is false.
 """
-immutable Generator{I,F}
+struct type Generator{I,F}
     f::F
     iter::I
 end
@@ -29,11 +29,11 @@ end
 
 ## iterator traits
 
-abstract IteratorSize
-immutable SizeUnknown <: IteratorSize end
-immutable HasLength <: IteratorSize end
-immutable HasShape <: IteratorSize end
-immutable IsInfinite <: IteratorSize end
+abstract type IteratorSize end
+struct type SizeUnknown <: IteratorSize end
+struct type HasLength <: IteratorSize end
+struct type HasShape <: IteratorSize end
+struct type IsInfinite <: IteratorSize end
 
 """
     iteratorsize(itertype::Type) -> IteratorSize
@@ -63,9 +63,9 @@ Base.HasLength()
 iteratorsize(x) = iteratorsize(typeof(x))
 iteratorsize(::Type) = HasLength()  # HasLength is the default
 
-abstract IteratorEltype
-immutable EltypeUnknown <: IteratorEltype end
-immutable HasEltype <: IteratorEltype end
+abstract type IteratorEltype end
+struct type EltypeUnknown <: IteratorEltype end
+struct type HasEltype <: IteratorEltype end
 
 """
     iteratoreltype(itertype::Type) -> IteratorEltype

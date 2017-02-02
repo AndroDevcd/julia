@@ -732,7 +732,7 @@ function test!(pkg::AbstractString,
     isfile(reqs_path) && resolve()
 end
 
-type PkgTestError <: Exception
+mutable type PkgTestError <: Exception
     msg::String
 end
 

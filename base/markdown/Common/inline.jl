@@ -4,7 +4,7 @@
 # Emphasis
 # ––––––––
 
-type Italic
+mutable type Italic
     text
 end
 
@@ -14,7 +14,7 @@ function asterisk_italic(stream::IO, md::MD)
     return result === nothing ? nothing : Italic(parseinline(result, md))
 end
 
-type Bold
+mutable type Bold
     text
 end
 
@@ -54,7 +54,7 @@ end
 # Images & Links
 # ––––––––––––––
 
-type Image
+mutable type Image
     url::String
     alt::String
 end
@@ -73,7 +73,7 @@ function image(stream::IO, md::MD)
     end
 end
 
-type Link
+mutable type Link
     text
     url::String
 end
@@ -147,7 +147,7 @@ end
 # Punctuation
 # –––––––––––
 
-type LineBreak end
+mutable type LineBreak end
 
 @trigger '\\' ->
 function linebreak(stream::IO, md::MD)

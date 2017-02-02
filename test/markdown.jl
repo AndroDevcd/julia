@@ -407,7 +407,7 @@ for (input, output) in (
 end
 
 # Interpolation / Custom types
-type Reference
+mutable type Reference
     ref
 end
 

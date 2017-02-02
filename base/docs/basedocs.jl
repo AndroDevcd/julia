@@ -2,7 +2,7 @@
 
 module BaseDocs
 
-immutable Keyword
+struct type Keyword
     name :: Symbol
 end
 macro kw_str(text) Keyword(Symbol(text)) end
@@ -118,19 +118,19 @@ or a definition of `eval`.  It does still import `Core`.
 kw"baremodule"
 
 """
-`bitstype` declares a concrete type whose data consists of plain old bits. Classic
-examples of bits types are integers and floating-point values. Some example built-in
-bits type declarations:
+`primitive type` declares a concrete type whose data consists of a simple bit string. Classic
+examples of primitive types are integers and floating-point values. Some example built-in
+primitive type declarations:
 
-    bitstype 32 Char
-    bitstype 8  Bool <: Integer
+    primitive type Char 32 end
+    primitive type Bool <: Integer 8 end
 
-The first parameter indicates how many bits of storage the type requires. Currently,
-only sizes that are multiples of 8 bits are supported. The second parameter gives the
-name of the type.  The `Bool` declaration shows how a bits type can be optionally
+The number after the name indicates how many bits of storage the type requires. Currently,
+only sizes that are multiples of 8 bits are supported.
+The `Bool` declaration shows how a primitive type can be optionally
 declared to be a subtype of some supertype.
 """
-kw"bitstype"
+kw"primitive type"
 
 """
 `macro` defines a method to include generated code in the final body of a program. A

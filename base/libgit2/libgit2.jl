@@ -36,7 +36,7 @@ include("callbacks.jl")
 
 using .Error
 
-immutable State
+struct type State
     head::GitHash
     index::GitHash
     work::GitHash
