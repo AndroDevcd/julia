@@ -860,7 +860,18 @@ convert(::Type{Dense}, A::Sparse) = sparse_to_dense(A)
 function (::Type{Sparse}){Tv<:VTypes}(m::Integer, n::Integer,
         colptr::Vector{SuiteSparse_long}, rowval::Vector{SuiteSparse_long},
         nzval::Vector{Tv}, stype)
-    # check if columns are sorted
+    # checks
+    ## length of input
+    if length(colptr) <= n
+        throw(ArgumentError("length of colptr must be at least n + 1 = $(n + 1) but was $(length(colptr))"))
+    end
+    if colptr[n + 1] > length(rowval)
+        throw(ArgumentError("length of rowval is $(length(rowval)) but value of colptr requires length to be at least $(colptr[n + 1])"))
+    end
+    if colptr[n + 1] > length(nzval)
+        throw(ArgumentError("length of nzval is $(length(nzval)) but value of colptr requires length to be at least $(colptr[n + 1])"))
+    end
+    ## columns are sorted
     iss = true
     for i = 2:length(colptr)
         if !issorted(view(rowval, colptr[i - 1] + 1:colptr[i]))
@@ -869,12 +880,12 @@ function (::Type{Sparse}){Tv<:VTypes}(m::Integer, n::Integer,
         end
     end
 
-    o = allocate_sparse(m, n, length(nzval), iss, true, stype, Tv)
+    o = allocate_sparse(m, n, colptr[n + 1], iss, true, stype, Tv)
     s = unsafe_load(o.p)
 
-    unsafe_copy!(s.p, pointer(colptr), length(colptr))
-    unsafe_copy!(s.i, pointer(rowval), length(rowval))
-    unsafe_copy!(s.x, pointer(nzval), length(nzval))
+    unsafe_copy!(s.p, pointer(colptr), n + 1)
+    unsafe_copy!(s.i, pointer(rowval), colptr[n + 1])
+    unsafe_copy!(s.x, pointer(nzval) , colptr[n + 1])
 
     @isok check_sparse(o)
 
@@ -898,15 +909,26 @@ function (::Type{Sparse}){Tv<:VTypes}(m::Integer, n::Integer,
 end
 
 function (::Type{Sparse}){Tv<:VTypes}(A::SparseMatrixCSC{Tv,SuiteSparse_long}, stype::Integer)
-    o = allocate_sparse(A.m, A.n, length(A.nzval), true, true, stype, Tv)
+    ## Check length of input. This should never fail but see #20024
+    if length(A.colptr) <= A.n
+        throw(ArgumentError("length of colptr must be at least size(A,2) + 1 = $(A.n + 1) but was $(length(A.colptr))"))
+    end
+    if nnz(A) > length(A.rowval)
+        throw(ArgumentError("length of rowval is $(length(A.rowval)) but value of colptr requires length to be at least $(nnz(A))"))
+    end
+    if nnz(A) > length(A.nzval)
+        throw(ArgumentError("length of nzval is $(length(A.nzval)) but value of colptr requires length to be at least $(nnz(A))"))
+    end
+
+    o = allocate_sparse(A.m, A.n, nnz(A), true, true, stype, Tv)
     s = unsafe_load(o.p)
-    for i = 1:length(A.colptr)
+    for i = 1:(A.n + 1)
         unsafe_store!(s.p, A.colptr[i] - 1, i)
     end
-    for i = 1:length(A.rowval)
+    for i = 1:nnz(A)
         unsafe_store!(s.i, A.rowval[i] - 1, i)
     end
-    unsafe_copy!(s.x, pointer(A.nzval), length(A.nzval))
+    unsafe_copy!(s.x, pointer(A.nzval), nnz(A))
 
     @isok check_sparse(o)
 
