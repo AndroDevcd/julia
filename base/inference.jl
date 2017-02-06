@@ -1395,18 +1395,18 @@ function precise_container_type(arg, typ, vtypes::VarTable, sv)
         aa = arg.args
         result = Any[ (isa(aa[j],Expr) ? aa[j].typ : abstract_eval(aa[j],vtypes,sv)) for j=2:length(aa) ]
         if _any(isvarargtype, result)
-            return nothing
+            return Any[Vararg{Any}]
         end
         return result
     elseif isa(tti, Union)
         utis = uniontypes(tti)
         if _any(t -> !isa(t,DataType) || !(t <: Tuple) || !isknownlength(t), utis)
-            return nothing
+            return Any[Vararg{Any}]
         end
         result = Any[utis[1].parameters...]
         for t in utis[2:end]
             if length(t.parameters) != length(result)
-                return nothing
+                return Any[Vararg{Any}]
             end
             for j in 1:length(t.parameters)
                 result[j] = tmerge(result[j], t.parameters[j])
