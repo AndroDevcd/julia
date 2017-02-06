@@ -1437,7 +1437,7 @@ function abstract_apply(af::ANY, fargs, aargtypes::Vector{Any}, vtypes::VarTable
         ctis = Any[]
         for ti in (splitunions ? uniontypes(aargtypes[i]) : Any[aargtypes[i]])
             cti = precise_container_type(fargs[i], ti, vtypes, sv)
-            if cti === nothing || (!isempty(cti) && isvarargtype(cti[end]) && i < nargs)
+            if cti === nothing
                 ctypes = [[Vararg{Any}]] # TODO: instead of bailing out completely, could fuse what we have so far with one trailing Vararg
                 break
             end
@@ -1449,7 +1449,12 @@ function abstract_apply(af::ANY, fargs, aargtypes::Vector{Any}, vtypes::VarTable
         end
         ctypes´  = []
         for r in ctypes, cti in ctis
-            push!(ctypes´, append_any(r, cti))
+            if !isempty(r) && isvarargtype(r[end])
+                tail = foldl((a,b)->tmerge(a,unwrapva(b)), unwrapva(r[end]), cti)
+                push!(ctypes´, push!(r[1:end-1], Vararg{widenconst(tail)}))
+            else
+                push!(ctypes´, append_any(r, cti))
+            end
         end
         ctypes = ctypes´
     end
